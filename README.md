@@ -3,6 +3,7 @@
 ## Setup.
 - install testrpc if you don't have it: ```npm install -g ethereumjs-testrpc```
 - run testrpc: ```testrpc```
+- install required node packages: ```npm install```
 - install and set up MetaMask
 
 ## Running the web client

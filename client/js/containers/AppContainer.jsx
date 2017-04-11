@@ -2,32 +2,25 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators} from 'redux';
 import { Link } from 'react-router';
-import { getExample, getMongooseExample } from '../actionCreators/exampleActionCreators';
+import { runDeployment } from '../actionCreators/deploymentActionCreators';
+import { setAccount } from '../actionCreators/userActionCreators';
 
 class AppContainer extends Component {
 
-  getExampleFromServerAPI() {
-    this.props.getExample();
-  }
-
-  getExampleFromMongoose() {
-    this.props.getMongooseExample();
+  componentDidMount() {
+    this.props.setAccount();
   }
 
   render() {
-    const { example } = this.props; //ES6 Object destructuring reduces 'this.props' noise in your render functions.
+    const { campaignValues, userAccount } = this.props;
     return(
       <div>
-        <h2>This is the App's Container Component</h2>
+        <h2>Giveth Campaign Deployer</h2>
         <Link to={ '/' }>Home</Link>
-        <Link to={ '/about'}>About</Link>
         { this.props.children }
         <hr />
-        <p>
-          Value of 'example' is: <b>{ example }</b>
-        </p>
-        <button onClick={ this.getExampleFromServerAPI.bind(this) }>Get 'example' from server API</button>
-        <button onClick={ this.getExampleFromMongoose.bind(this) }>Get 'example' from Mongo(ose)</button>
+          <p>Value of 'userAccount' is: <b>{ userAccount }</b></p>
+          <p>Value of 'campaignValues' is: <b>{ JSON.stringify(campaignValues) }</b></p>
       </div>
     );
   }
@@ -35,10 +28,10 @@ class AppContainer extends Component {
 };
 
 //
-const mapStateToProps = ({ example }) => ({ example });
+const mapStateToProps = ({ campaignValues, userAccount }) => ({ campaignValues, userAccount });
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ getExample, getMongooseExample }, dispatch);
+  return bindActionCreators({ runDeployment, setAccount }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

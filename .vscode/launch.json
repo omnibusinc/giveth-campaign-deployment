@@ -19,6 +19,20 @@
       "outDir": null
     },
     {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch CLI",
+      "program": "${workspaceRoot}/cli_deploy.js",
+      "stopOnEntry": false,
+      "cwd": "${workspaceRoot}",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "externalConsole": false,
+      "sourceMaps": false,
+      "outDir": null
+    },
+    {
       "name": "Attach",
       "type": "node",
       "request": "attach",

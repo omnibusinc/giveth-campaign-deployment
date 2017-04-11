@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
-import { example } from './exampleReducer';
+import { campaignValues } from './deploymentReducer';
+import { userAccount } from './userReducer';
+
 const rootReducer = combineReducers({
-  example
+  campaignValues,
+  userAccount
 });
 export default rootReducer;

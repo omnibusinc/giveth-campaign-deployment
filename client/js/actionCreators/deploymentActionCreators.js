@@ -248,11 +248,12 @@ const deployCampaignContract = (...args) => {
 }
 
 const changeMiniMeTokenController = () => {
+    console.log("CHANGE MINIME TOKEN CONTROLLER");
     return new Promise((resolve, reject) => {
-        console.log("CHANGE MINIME TOKEN CONTROLLER")
-        instances['minimetokenContractInstance'].changeController(instances['campaignContractInstance'].address, {from: fromAccount});
-        console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
-        resolve('MINIMI TOKEN CONTROLLER CHANGED');
+        instances['minimetokenContractInstance'].changeController(instances['campaignContractInstance'].address, {from: fromAccount}, function(error, result) {
+            console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
+            resolve('MINIMI TOKEN CONTROLLER CHANGED');
+        });
     });
 }
 

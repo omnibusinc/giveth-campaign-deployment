@@ -72,10 +72,10 @@ export function runDeployment(userAccount, campaignValues) {
         .then(vaultContract)
         .then((result) => deployVaultContract(result, dispatch))
         .then(campaignContract)
-        .then(deployCampaignContract)
-        .then(changeMiniMeTokenController)
+        .then((result) => deployCampaignContract(result, dispatch))
+        .then(() => changeMiniMeTokenController(dispatch))
         .then(milestoneTrackerContract)
-        .then(deployMilestoneTrackerContract)
+        .then((result) => deployMilestoneTrackerContract(result, dispatch))
         .then((data) => console.log(data))
         .then((data) => console.log("ALL COMPLETE"))
         .then((data) => {
@@ -132,8 +132,7 @@ const deployMiniMeTokenFactoryContract = (miniMeTokenFactoryContract, dispatch) 
                     console.log("Error", e);
                     dispatch(showError('Mini Me Token Factory Contract Deployment Failed',  e.message));
                     reject(e);
-                }
-                if (typeof contract.address !== 'undefined') {
+                } else if (typeof contract.address !== 'undefined') {
                     console.log('MiniMe Token Factory Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
                     instances['miniMeTokenFactoryInstance'] = miniMeTokenFactoryContract.at(contract.address);
                     response.push({
@@ -171,6 +170,7 @@ const miniMeTokenContract = () => {
 const deployMiniMeTokenContract = (...args) => {
     console.log('DEPLOYING MINIME TOKEN CONTRACT');
     const data = args[0];
+    let dispatch = args[1];
     return new Promise((resolve, reject) => data.contract.new(
         data._tokenFactory,
         data._parentToken,
@@ -187,10 +187,9 @@ const deployMiniMeTokenContract = (...args) => {
             },  (e, contract) => {
                 if(e) {
                     console.log("Error", e);
-                    dispatch(showError('Mini Me Token Factory Contract Deployment Failed',  e.message));
+                    dispatch(showError('Mini Me Token Contract Deployment Failed',  e.message));
                     reject(e);
-                }
-                if (typeof contract.address !== 'undefined') {
+                } else if (typeof contract.address !== 'undefined') {
                     console.log('MiniMe Token Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
                     instances['minimetokenContractInstance'] = data.contract.at(contract.address);
                     response.push({
@@ -224,6 +223,7 @@ const vaultContract = () => {
 const deployVaultContract = (...args) => {
     console.log('DEPLOYING VAULT CONTRACT');
     const data = args[0];
+    let dispatch = args[1];
     return new Promise((resolve, reject) => data.contract.new(
         _escapeCaller,
         _escapeDestination,
@@ -239,6 +239,7 @@ const deployVaultContract = (...args) => {
             }, (e, contract) => {
                 if(e) {
                     console.log("Error", e);
+                    dispatch(showError('Vault Contract Deployment Failed',  e.message));
                     reject(e)
                 }
                 if (typeof contract.address !== 'undefined') {
@@ -279,6 +280,7 @@ const campaignContract = () => {
 const deployCampaignContract = (...args) => {
     console.log('DEPLOYING CAMPAIGN CONTRACT');
     const data = args[0];
+    let dispatch = args[1];
     return new Promise((resolve, reject) => data.contract.new(
         data._startFundingTime,
         data._endFundingTime,
@@ -293,9 +295,9 @@ const deployCampaignContract = (...args) => {
             }, (e, contract) => {
                 if(e) {
                     console.log("Error", e);
+                    dispatch(showError('Campaign Contract Deployment Failed',  e.message));
                     reject(e);
-                }
-                if (typeof contract.address !== 'undefined') {
+                } else if (typeof contract.address !== 'undefined') {
                     console.log('Campaign Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
                     instances['campaignContractInstance'] = data.contract.at(contract.address);
                     response.push({
@@ -309,13 +311,19 @@ const deployCampaignContract = (...args) => {
             }));
 }
 
-const changeMiniMeTokenController = () => {
+const changeMiniMeTokenController = (dispatch) => {
     console.log("CHANGE MINIME TOKEN CONTROLLER");
     return new Promise((resolve, reject) => {
-        instances['minimetokenContractInstance'].changeController(instances['campaignContractInstance'].address, {from: fromAccount}, function(error, result) {
-            console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
-            dispatch(updateDeploymentStatus('controllerUpdate'));
-            resolve('MINIMI TOKEN CONTROLLER CHANGED');
+        instances['minimetokenContractInstance'].changeController(instances['campaignContractInstance'].address, {from: fromAccount}, (error, result) => {
+            if(error) {
+                console.log("Error", e);
+                dispatch(showError('Mini Me Token Controller Update Failed',  e.message));
+                reject(e);
+            } else {
+                console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
+                dispatch(updateDeploymentStatus('controllerUpdate'));
+                resolve('MINIMI TOKEN CONTROLLER CHANGED');
+            }
         });
     });
 }
@@ -336,6 +344,7 @@ const milestoneTrackerContract = () => {
 const deployMilestoneTrackerContract = (...args) => {
     console.log('DEPLOYING MILESTONE TRACKER CONTRACT');
     const data = args[0];
+    let dispatch = args[1];
     return new Promise((resolve, reject) => data.contract.new(
         _arbitrator,
         _donor,
@@ -348,9 +357,9 @@ const deployMilestoneTrackerContract = (...args) => {
             }, (e, contract) => {
                 if(e) {
                     console.log("Error", e);
+                    dispatch(showError('Mini Me Token Controller Update Failed',  e.message));
                     reject(e);
-                }
-                if (typeof contract.address !== 'undefined') {
+                } else if (typeof contract.address !== 'undefined') {
                     console.log('Milestone Tracker Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
                     instances['milestoneTrackerContractInstance'] = data.contract.at(contract.address);
                     response.push({

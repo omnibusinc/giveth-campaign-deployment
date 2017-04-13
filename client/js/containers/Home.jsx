@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DeploymentResults from '../components/DeploymentResults';
 import Field from '../components/Field';
 import deploymentActions from '../actions/deploymentActions';
+import { setAccount } from '../actionCreators/userActionCreators';
 import { runDeployment, updateCampaignValues } from '../actionCreators/deploymentActionCreators';
 import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label } from 'react-bootstrap';
 
@@ -22,6 +23,11 @@ class Home extends Component {
     this.props.updateCampaignValues(campaignValues);
   }
 
+  //FIXME: CHECK INPUT
+  updateUser(caller) {
+    this.props.setAccount(caller.currentTarget.value);
+  }
+
   runDeployment() {
     this.props.runDeployment(this.props.userAccount, this.props.campaignValues);
   }
@@ -34,22 +40,60 @@ class Home extends Component {
     return complete;
   }
 
+  formatCurrentDeploymentStep(step) {
+    if(step) {
+      let words = step.replace( /([A-Z])/g, " $1" );
+      let stepText =  words.charAt(0).toUpperCase() + words.slice(1);
+      return stepText;
+    }
+    return "";
+  }
+
   render() {
-    const { campaignValues, deploymentStatus, deploymentResults, completedDeployments, error } = this.props;
+    const { userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error } = this.props;
     return (
       <div>
-        {
-          error &&
-          <Alert bsStyle="danger">
-            <h2>Oops! There was an error!</h2>
-            <h4>{ error.message }</h4>
-            <p>{ error.stacktrace }</p>
-          </Alert>
-        }
         <Row>
-          <Col md={ 6 }>
+          <Col md={ 8 } mdOffset={ 2 }>
+            {
+              error &&
+              <Alert bsStyle="danger">
+                <h2>Oops! There was an error!</h2>
+                <h4>{ error.message }</h4>
+                <p>{ error.stacktrace }</p>
+              </Alert>
+            }
+            <div className="deployment-progress text-center">
+              {
+                deploymentStatus === deploymentActions.RUN_IN_PROGRESS &&
+                <div>
+                  <h4>Deploying: { this.formatCurrentDeploymentStep(currentDeploymentStep) } <img src="../../img/spinner.gif" className="spinner" /></h4>
+                  <ProgressBar active now={ this.getPercentComplete() } />
+                </div>
+              }
+              { 
+                deploymentStatus === deploymentActions.RUN_COMPLETE &&  
+                <div>
+                  <span>Deployment Complete!</span>
+                  <ProgressBar bsStyle="success" now={ 100 } />
+                </div>
+              }
+            </div>
             { deploymentResults.length > 0 && <DeploymentResults results={ deploymentResults } /> }
-            <Form horizontal>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={ 10 }>
+            <Form horizontal className="campaign-form">
+              <FormGroup controlId='userAccount'>
+                <Col componentClass={ ControlLabel } md={ 4 }>Sender</Col>
+                <Col md={ 8 }>
+                  <FormControl
+                    type="text"
+                    value={ userAccount }
+                    onChange={ this.updateUser.bind(this) } />
+                </Col>
+              </FormGroup>
               <Field 
                 fieldName="escapeCaller" 
                 fieldText="Escape Caller" 
@@ -113,74 +157,17 @@ class Home extends Component {
               </Row>
             </Form>
           </Col>
-          <Col md={ 6 }>
-            { /*
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS && 
-              <ProgressBar>
-                <ProgressBar active bsStyle="success" now={1} key={0} />
-                { completedDeployments.miniMeTokenFactoryContract == true && <ProgressBar active bsStyle="success" now={16} key={1} /> }
-                { completedDeployments.miniMeTokenContract == true && <ProgressBar active bsStyle="success" now={17} key={2} /> }
-                { completedDeployments.vaultContract == true && <ProgressBar active bsStyle="success" now={16} key={3} /> }
-                { completedDeployments.campaignContract == true && <ProgressBar active bsStyle="success" now={17} key={4} /> }
-                { completedDeployments.controllerUpdate == true && <ProgressBar active bsStyle="success" now={16} key={5} /> }
-                { completedDeployments.milestoneTrackerContract == true && <ProgressBar active bsStyle="success" now={17} key={6} /> }
-              </ProgressBar>
-            */ }
-            { deploymentStatus === deploymentActions.RUN_IN_PROGRESS && <ProgressBar active now={ this.getPercentComplete() } /> }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  completedDeployments.miniMeTokenFactoryContract != true
-                  ?  <span>Deploying: Mini Me Token Factory Contract <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  <div>Mini Me Token Factory Contract Deployed!</div>
-                : null
-            }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  (completedDeployments.miniMeTokenFactoryContract == true && completedDeployments.miniMeTokenContract != true)
-                  ?  <span>Deploying: Mini Me Token Contract <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  completedDeployments.miniMeTokenContract == true && <div>Mini Me Token Contract Deployed!</div>
-                : null
-            }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  (completedDeployments.miniMeTokenContract == true && completedDeployments.vaultContract != true)
-                  ?  <span>Deploying: Vault Contract <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  completedDeployments.vaultContract == true && <div>Vault Contract Deployed!</div>
-                : null
-            }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  (completedDeployments.vaultContract == true && completedDeployments.campaignContract != true)
-                  ?  <span>Deploying: Campaign Contract <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  completedDeployments.campaignContract == true && <div>Campaign Contract Deployed!</div>
-                : null
-            }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  (completedDeployments.campaignContract == true && completedDeployments.controllerUpdate != true)
-                  ?  <span>Deploying: Campaign Controller Update <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  completedDeployments.controllerUpdate == true && <div>Campaign Controller Update Deployed!</div>
-                : null
-            }
-            { 
-              deploymentStatus === deploymentActions.RUN_IN_PROGRESS 
-                ?  (completedDeployments.controllerUpdate == true && completedDeployments.milestoneTrackerContract != true)
-                  ?  <span>Deploying: Milestone Tracker Contract <img src="../../img/spinner.gif" className="spinner" /></span>
-                  :  completedDeployments.milestoneTrackerContract == true && <div>Milestone Tracker Contract Deployed!</div>
-                : null
-            }
-          </Col>
         </Row>
       </div>
     )
   }
 }
 
-const mapStateToProps = ({ campaignValues, deploymentStatus, deploymentResults, completedDeployments, error }) => 
-  ({ campaignValues, deploymentStatus, deploymentResults, completedDeployments, error });
+const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error }) => 
+  ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ runDeployment, updateCampaignValues }, dispatch);
+  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

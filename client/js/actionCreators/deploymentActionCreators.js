@@ -8,11 +8,6 @@ if (typeof window.web3 !== 'undefined') {
 } else {
   web3 = new w3(new w3.providers.HttpProvider(provider_endpoint));
 }
-// if (typeof web3 !== 'undefined') {
-//   web3 = new w3(web3.currentProvider);
-// } else {
-//   web3 = new w3(new w3.providers.HttpProvider(provider_endpoint));
-// }
 
 let fromAccount, _escapeCaller, _escapeDestination, _securityGuard, _arbitrator, _donor, _recipient, _tokenName, _tokenSymbol, _gasPrice;
 let instances = {};
@@ -40,6 +35,13 @@ function deploymentComplete(data) {
     type: deploymentActions.DEPLOYMENT_COMPLETE,
     payload: { data }
   }
+}
+
+function updateCurrentDeploymentStep(data) {
+    return {
+        type: deploymentActions.UPDATE_DEPLOYMENT_STEP,
+        payload: { data }
+    }
 }
 
 //show errors on the UI
@@ -76,7 +78,7 @@ export function runDeployment(userAccount, campaignValues) {
     dispatch(updateDeploymentStatus(deploymentActions.RUN_IN_PROGRESS));
     return getGasPrice()
         .then(setGasPrice)
-        .then(minimetokenfactoryContract)
+        .then(() => minimetokenfactoryContract(dispatch))
         .then((result) => deployMiniMeTokenFactoryContract(result, dispatch))
         .then(miniMeTokenContract)
         .then((result) => deployMiniMeTokenContract(result, dispatch))
@@ -91,7 +93,7 @@ export function runDeployment(userAccount, campaignValues) {
         .then((data) => console.log("ALL COMPLETE"))
         .then((data) => {
             console.log("RESPONSE", response);
-            dispatch(setDeploymentResults(results));
+            dispatch(setDeploymentResults(response));
             dispatch(updateDeploymentStatus(deploymentActions.RUN_COMPLETE));
         });
   }
@@ -121,8 +123,9 @@ const setGasPrice = (data) => {
 /**********************************
     Create the MiniMe Token Factory
 **********************************/
-const minimetokenfactoryContract = () => {
+const minimetokenfactoryContract = (dispatch) => {
     console.log('CREATING MINIME TOKEN FACTORY');
+    dispatch(updateCurrentDeploymentStep('miniMeTokenFactoryContract'));
     return new Promise((resolve, reject) => {
         resolve(web3.eth.contract([{"constant":false,"inputs":[{"name":"_parentToken","type":"address"},{"name":"_snapshotBlock","type":"uint256"},{"name":"_tokenName","type":"string"},{"name":"_decimalUnits","type":"uint8"},{"name":"_tokenSymbol","type":"string"},{"name":"_transfersEnabled","type":"bool"}],"name":"createCloneToken","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"}]));
     });
@@ -152,6 +155,7 @@ const deployMiniMeTokenFactoryContract = (miniMeTokenFactoryContract, dispatch) 
                         transactionHash: contract.transactionHash
                     })
                     dispatch(deploymentComplete('miniMeTokenFactoryContract'));
+                    dispatch(updateCurrentDeploymentStep('miniMeTokenContract'));
                     resolve('Mini Me Token Factory Complete!');
                 }
             }))
@@ -209,6 +213,7 @@ const deployMiniMeTokenContract = (...args) => {
                         transactionHash: contract.transactionHash
                     });
                     dispatch(deploymentComplete('miniMeTokenContract'));
+                    dispatch(updateCurrentDeploymentStep('vaultContract'));
                     resolve('Mini Me Contract Complete.');
                 }
         }))
@@ -262,6 +267,7 @@ const deployVaultContract = (...args) => {
                         transactionHash: contract.transactionHash
                     });
                     dispatch(deploymentComplete('vaultContract'));
+                    dispatch(updateCurrentDeploymentStep('campaignContract'));
                     resolve('Vault Complete.');
                 }
             }));
@@ -317,6 +323,7 @@ const deployCampaignContract = (...args) => {
                         transactionHash: contract.transactionHash
                     });
                     dispatch(deploymentComplete('campaignContract'));
+                    dispatch(updateCurrentDeploymentStep('controllerUpdate'));
                     resolve('Campaign Complete.');
                 }
             }));
@@ -333,6 +340,7 @@ const changeMiniMeTokenController = (dispatch) => {
             } else {
                 console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
                 dispatch(deploymentComplete('controllerUpdate'));
+                dispatch(updateCurrentDeploymentStep('milestoneTrackerContract'));
                 resolve('MINIMI TOKEN CONTROLLER CHANGED');
             }
         });

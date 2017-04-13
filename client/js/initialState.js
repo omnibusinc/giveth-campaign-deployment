@@ -13,6 +13,7 @@ module.exports = function() {
       tokenSymbol: ''
     },
     deploymentStatus: 'RUN_UNSTARTED', 
+    currentDeploymentStep: null,
     completedDeployments: {
       miniMeTokenFactoryContract: false,
       miniMeTokenContract: false,

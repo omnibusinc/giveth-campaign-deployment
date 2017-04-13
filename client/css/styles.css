@@ -2,6 +2,10 @@
     margin-top: 20px;
 }
 
+.masthead {
+  margin-bottom: 40px;
+}
+
 .logo-giveth {
     background-image: url(/img/logo_giveth.svg);
     background-repeat: no-repeat;
@@ -21,6 +25,10 @@
   padding: 0px 10px;
 }
 
+.campaign-form {
+  padding: 20px 0px;
+}
+
 .progress-spinner {
   background-image: url(/img/spinner.gif);
   background-repeat: no-repeat;
@@ -31,4 +39,8 @@
 .spinner {
   width: 30px;
   height: 30px;
+}
+
+.progress {
+  margin: 20px 0px;
 }

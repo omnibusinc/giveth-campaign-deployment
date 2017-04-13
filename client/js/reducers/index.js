@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { campaignValues, deploymentResults, deploymentStatus, completedDeployments, error } from './deploymentReducer';
+import { campaignValues, deploymentResults, deploymentStatus, completedDeployments, currentDeploymentStep, error } from './deploymentReducer';
 import { userAccount } from './userReducer';
 
 const rootReducer = combineReducers({
@@ -7,6 +7,7 @@ const rootReducer = combineReducers({
   deploymentStatus,
   deploymentResults,
   completedDeployments,
+  currentDeploymentStep,
   error,
   userAccount
 });

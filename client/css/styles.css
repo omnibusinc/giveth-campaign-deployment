@@ -1,4 +1,34 @@
 .main {
-  color: #ff0000;
-  font-family: Arial, sans-serif;
+    margin-top: 20px;
+}
+
+.logo-giveth {
+    background-image: url(/img/logo_giveth.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 200px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.padded-vertical {
+  padding: 10px 0px;
+}
+
+.padded-horizontal {
+  padding: 0px 10px;
+}
+
+.progress-spinner {
+  background-image: url(/img/spinner.gif);
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100px;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
 }

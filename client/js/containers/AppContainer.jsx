@@ -14,8 +14,9 @@ class AppContainer extends Component {
   render() {
     const { campaignValues, userAccount } = this.props;
     return(
-      <div>
-        <h2>Giveth Campaign Deployer</h2>
+      <div className="main container padded-vertical">
+        <div className="logo-giveth"></div>
+        <h1 className="text-center">Campaign Deployer</h1>
           <h3> Using Account: <b>{ userAccount }</b></h3>
           <Home campaignValues={ campaignValues } userAccount={ userAccount }/>
         <hr />

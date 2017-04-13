@@ -20,6 +20,14 @@ export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action
     }
 }
 
+export function currentDeploymentStep(state = null, action) {
+    switch(action.type) {
+        case deploymentActions.UPDATE_DEPLOYMENT_STEP:
+            return action.payload.data;
+        default: return state;
+    }
+}
+
 export function deploymentResults(state = [], action) {
     switch(action.type) {
         case deploymentActions.SET_DEPLOYMENT_RESULTS:

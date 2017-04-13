@@ -1,5 +1,6 @@
 import deploymentActions from '../actions/deploymentActions';
 
+//addresses, tokenName, and tokenSymbol.
 export function campaignValues(state = {}, action) {
     switch(action.type) {
         case deploymentActions.UPDATE_CAMPAIGN_VALUES:
@@ -13,6 +14,7 @@ export function campaignValues(state = {}, action) {
     }
 }
 
+//what state is the deployment in?
 export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action) {
     switch(action.type) {
         case deploymentActions.RUN_IN_PROGRESS: 
@@ -27,6 +29,7 @@ export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action
     }
 }
 
+//current step in the deployment chain.
 export function currentDeploymentStep(state = null, action) {
     switch(action.type) {
         case deploymentActions.UPDATE_DEPLOYMENT_STEP:
@@ -37,6 +40,7 @@ export function currentDeploymentStep(state = null, action) {
     }
 }
 
+//full results (contract addresses and tx hashes) of a completed deployment chain.
 export function deploymentResults(state = [], action) {
     switch(action.type) {
         case deploymentActions.SET_DEPLOYMENT_RESULTS:
@@ -47,6 +51,7 @@ export function deploymentResults(state = [], action) {
     }
 }
 
+//set individual deployments as complete as the chain progresses.
 export function completedDeployments(state = {}, action) {
     switch(action.type) {
         case deploymentActions.DEPLOYMENT_COMPLETE:
@@ -57,6 +62,7 @@ export function completedDeployments(state = {}, action) {
     }
 }
 
+//show errors in the deployment process to the user.
 export function error(state = false, action) {
     switch(action.type) {
         case deploymentActions.RUN_ERROR:
@@ -71,6 +77,7 @@ export function error(state = false, action) {
             HELPERS
 *********************************/
 
+//reset all values to their initial state.
 function resetCompletedDeployments(state) {
     let newState = state;
     for(var deployment in newState) {

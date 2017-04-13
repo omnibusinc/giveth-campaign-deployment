@@ -16,6 +16,7 @@ class Home extends Component {
     }
   }
 
+  //update values to the campaign fields.
   handleChange(item, caller) {
     this.setState({ edited: true });
     let campaignValues = Object.assign({}, this.props.campaignValues);
@@ -24,14 +25,17 @@ class Home extends Component {
   }
 
   //FIXME: CHECK INPUT
+  //update the user's account (source of funds)
   updateUser(caller) {
     this.props.setAccount(caller.currentTarget.value);
   }
 
+  //begin the deployment chain.
   runDeployment() {
     this.props.runDeployment(this.props.userAccount, this.props.campaignValues);
   }
 
+  //get deployment chain progress for progress bar.
   getPercentComplete() {
     let complete = 10;
     for(var deployment in this.props.completedDeployments) {
@@ -40,6 +44,7 @@ class Home extends Component {
     return complete;
   }
 
+  //format the text for human-readable progress output.
   formatCurrentDeploymentStep(step) {
     if(step) {
       let words = step.replace( /([A-Z])/g, " $1" );
@@ -48,6 +53,8 @@ class Home extends Component {
     }
     return "";
   }
+
+  //reset all app values to their initial states.
   reset() {
     this.setState({ edited: false });
     this.props.reset();
@@ -166,7 +173,7 @@ class Home extends Component {
                   handleChange={ this.handleChange.bind(this, 'tokenSymbol')}>
                   </Field>
                 <Row className="pullRight">
-                  <Col md={ 4 } mdOffset={ 8 }>
+                  <Col md={ 2 } mdOffset={ 10 }>
                     <Button bsStyle="success" onClick={ this.runDeployment.bind(this) } disabled={ (!this.state.edited || deploymentStatus === deploymentActions.RUN_IN_PROGRESS) } >Run Deployment</Button>
                   </Col>
                 </Row>

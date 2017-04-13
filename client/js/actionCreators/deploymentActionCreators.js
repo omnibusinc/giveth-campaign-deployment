@@ -21,6 +21,7 @@ export function updateCampaignValues(data) {
     }
 }
 
+//reset all values to their initial state.
 export function reset() {
     return { type: deploymentActions.RESET };
 }
@@ -41,6 +42,7 @@ function deploymentComplete(data) {
   }
 }
 
+//set the current step in the deployment process.
 function updateCurrentDeploymentStep(data) {
     return {
         type: deploymentActions.UPDATE_DEPLOYMENT_STEP,
@@ -56,6 +58,7 @@ function showError(message, stacktrace) {
     }
 }
 
+//set the results (addresses and tx hashes) of all deployments when the full deployment chain has completed for UI display.
 function setDeploymentResults(data) {
     return {
         type: deploymentActions.SET_DEPLOYMENT_RESULTS,
@@ -66,6 +69,7 @@ function setDeploymentResults(data) {
 /*********************************
             THUNKS
 *********************************/
+
 //create and deploy each contract serially.
 export function runDeployment(userAccount, campaignValues) {
     fromAccount = userAccount;
@@ -332,6 +336,9 @@ const deployCampaignContract = (...args) => {
             }));
 }
 
+/**********************************
+    Change the Token Controller
+**********************************/
 const changeMiniMeTokenController = (dispatch) => {
     console.log("CHANGE MINIME TOKEN CONTROLLER");
     return new Promise((resolve, reject) => {

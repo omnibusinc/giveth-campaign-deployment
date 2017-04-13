@@ -89,6 +89,7 @@ class Home extends Component {
                 <Col componentClass={ ControlLabel } md={ 4 }>Sender</Col>
                 <Col md={ 8 }>
                   <FormControl
+                    disabled={ deploymentStatus === deploymentActions.RUN_IN_PROGRESS }
                     type="text"
                     value={ userAccount }
                     onChange={ this.updateUser.bind(this) } />

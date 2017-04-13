@@ -9,5 +9,5 @@
 ## Running the web client
 - ```npm start```
 
-## Running the cli version
+## Running the cli version 
 - ```npm run cli_deploy```

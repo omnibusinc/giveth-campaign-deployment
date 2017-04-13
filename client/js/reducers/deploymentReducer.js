@@ -22,7 +22,7 @@ export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action
 
 export function deploymentResults(state = [], action) {
     switch(action.type) {
-        case deploymentActions.RUN_COMPLETE:
+        case deploymentActions.SET_DEPLOYMENT_RESULTS:
             return action.payload.data;
         default: return state;
     }

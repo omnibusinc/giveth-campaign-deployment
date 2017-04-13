@@ -20,6 +20,7 @@ module.exports = function() {
       campaignContract: false,
       controllerUpdate: false,
       milestoneTrackerContract: false
-    }
+    },
+    deploymentResults: {}
   };
 }

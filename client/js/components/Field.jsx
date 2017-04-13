@@ -4,8 +4,8 @@ import deploymentActions from '../actions/deploymentActions';
 
 const Field = ({fieldName, fieldText, deploymentStatus, campaignValues, handleChange}) => (
     <FormGroup controlId={ fieldName }>
-        <Col componentClass={ ControlLabel } sm={ 2 }>{ fieldText }</Col>
-        <Col sm={ 4 }>
+        <Col componentClass={ ControlLabel } md={ 4 }>{ fieldText }</Col>
+        <Col md={ 8 }>
             <FormControl
             disabled={ deploymentStatus === deploymentActions.RUN_IN_PROGRESS }
             type="text"

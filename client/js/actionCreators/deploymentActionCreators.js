@@ -42,10 +42,18 @@ function deploymentComplete(data) {
   }
 }
 
+//show errors on the UI
 function showError(message, stacktrace) {
     return { 
         type: deploymentActions.RUN_ERROR,
         payload: { data: { message, stacktrace } }
+    }
+}
+
+function setDeploymentResults(data) {
+    return {
+        type: deploymentActions.SET_DEPLOYMENT_RESULTS,
+        payload: { data }
     }
 }
 
@@ -83,7 +91,8 @@ export function runDeployment(userAccount, campaignValues) {
         .then((data) => console.log("ALL COMPLETE"))
         .then((data) => {
             console.log("RESPONSE", response);
-            dispatch(deploymentStatus(deploymentActions.RUN_COMPLETE));
+            dispatch(setDeploymentResults(results));
+            dispatch(updateDeploymentStatus(deploymentActions.RUN_COMPLETE));
         });
   }
 }
@@ -266,8 +275,8 @@ const campaignContract = () => {
     let now = + new Date();
     return new Promise((resolve, reject) => {
         resolve({
-            _startFundingTime: now/1000, // Converts the js Now to the Solidity now :-D 
-            _endFundingTime: now/1000 + 86400*365*5, // This campaign will be live for 5 years after that no new tokens will be issued 
+            _startFundingTime: (now/1000), // Converts the js Now to the Solidity now :-D 
+            _endFundingTime: (now/1000) + 86400*365*5, // This campaign will be live for 5 years after that no new tokens will be issued 
             _maximumFunding: web3.toWei(10000), // This campaign will collect a maximum of 10,000 ETH after that no new tokens will be issued 
             _tokenAddress: instances['minimetokenContractInstance'].address,
             _vaultAddress: instances['vaultContractInstance'].address,

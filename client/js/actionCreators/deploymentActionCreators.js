@@ -28,13 +28,16 @@ export function updateCampaignValues(data) {
 
 //RUN_UNSTARTED, RUN_IN_PROGRESS, RUN_COMPLETE, RUN_ERROR
 export function updateDeploymentStatus(status) {
-    return { type: status }
+    return { 
+        type: status,
+        payload: { data: status }
+    }
 }
 
 //Marking Individual deployments as complete for User notification.
 function deploymentComplete(data) {
   return {
-    type: deploymentActions.RUN_COMPLETE,
+    type: deploymentActions.DEPLOYMENT_COMPLETE,
     payload: { data }
   }
 }
@@ -80,7 +83,6 @@ export function runDeployment(userAccount, campaignValues) {
         .then((data) => console.log("ALL COMPLETE"))
         .then((data) => {
             console.log("RESPONSE", response);
-            dispatch(deploymentComplete(response));
             dispatch(deploymentStatus(deploymentActions.RUN_COMPLETE));
         });
   }
@@ -140,7 +142,7 @@ const deployMiniMeTokenFactoryContract = (miniMeTokenFactoryContract, dispatch) 
                         address: contract.address,
                         transactionHash: contract.transactionHash
                     })
-                    dispatch(updateDeploymentStatus('miniMeTokenFactoryContract'));
+                    dispatch(deploymentComplete('miniMeTokenFactoryContract'));
                     resolve('Mini Me Token Factory Complete!');
                 }
             }))
@@ -197,7 +199,7 @@ const deployMiniMeTokenContract = (...args) => {
                         address: contract.address,
                         transactionHash: contract.transactionHash
                     });
-                    dispatch(updateDeploymentStatus('miniMeTokenContract'));
+                    dispatch(deploymentComplete('miniMeTokenContract'));
                     resolve('Mini Me Contract Complete.');
                 }
         }))
@@ -250,7 +252,7 @@ const deployVaultContract = (...args) => {
                         address: contract.address,
                         transactionHash: contract.transactionHash
                     });
-                    dispatch(updateDeploymentStatus('vaultContract'));
+                    dispatch(deploymentComplete('vaultContract'));
                     resolve('Vault Complete.');
                 }
             }));
@@ -305,7 +307,7 @@ const deployCampaignContract = (...args) => {
                         address: contract.address,
                         transactionHash: contract.transactionHash
                     });
-                    dispatch(updateDeploymentStatus('campaignContract'));
+                    dispatch(deploymentComplete('campaignContract'));
                     resolve('Campaign Complete.');
                 }
             }));
@@ -321,7 +323,7 @@ const changeMiniMeTokenController = (dispatch) => {
                 reject(e);
             } else {
                 console.log(`Mini Me Token Controller changed to ${instances['campaignContractInstance'].address}`);
-                dispatch(updateDeploymentStatus('controllerUpdate'));
+                dispatch(deploymentComplete('controllerUpdate'));
                 resolve('MINIMI TOKEN CONTROLLER CHANGED');
             }
         });
@@ -367,7 +369,7 @@ const deployMilestoneTrackerContract = (...args) => {
                         address: contract.address,
                         transactionHash: contract.transactionHash
                     });
-                    dispatch(updateDeploymentStatus('milestoneTrackerContract'));
+                    dispatch(deploymentComplete('milestoneTrackerContract'));
                     resolve('Milestone Tracker Complete!');
                 }
         }))

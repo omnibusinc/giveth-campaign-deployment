@@ -11,11 +11,11 @@ export function campaignValues(state = {}, action) {
 export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action) {
     switch(action.type) {
         case deploymentActions.RUN_IN_PROGRESS: 
-            return deploymentActions.RUN_IN_PROGRESS;
+            return action.payload.data;
         case deploymentActions.RUN_COMPLETE: 
-            return deploymentActions.RUN_COMPLETE;
+            return action.payload.data;
         case deploymentActions.RUN_ERROR: 
-            return deploymentActions.RUN_ERROR;
+            return action.payload.data;
         default: return state;
     }
 }

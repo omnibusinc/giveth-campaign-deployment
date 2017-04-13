@@ -39,7 +39,7 @@ class Home extends Component {
           </Alert>
         }
         { deploymentResults.length > 0 && <DeploymentResults results={ deploymentResults } /> }
-        { /*
+        {
           deploymentStatus === deploymentActions.RUN_IN_PROGRESS && 
           <ProgressBar>
             { completedDeployments.miniMeTokenFactoryContract == true && <ProgressBar active bsStyle="success" now={16} key={1} /> }
@@ -49,7 +49,7 @@ class Home extends Component {
             { completedDeployments.controllerUpdate == true && <ProgressBar active bsStyle="success" now={16} key={5} /> }
             { completedDeployments.milestoneTrackerContract == true && <ProgressBar active bsStyle="success" now={18} key={6} /> }
           </ProgressBar>
-        */ }
+        }
         <Form horizontal>
           <Field 
             fieldName="escapeCaller" 

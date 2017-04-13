@@ -5,7 +5,7 @@ import DeploymentResults from '../components/DeploymentResults';
 import Field from '../components/Field';
 import deploymentActions from '../actions/deploymentActions';
 import { setAccount } from '../actionCreators/userActionCreators';
-import { runDeployment, updateCampaignValues } from '../actionCreators/deploymentActionCreators';
+import { runDeployment, updateCampaignValues, reset } from '../actionCreators/deploymentActionCreators';
 import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label } from 'react-bootstrap';
 
 class Home extends Component {
@@ -17,7 +17,7 @@ class Home extends Component {
   }
 
   handleChange(item, caller) {
-    this.setState({edited: true});
+    this.setState({ edited: true });
     let campaignValues = Object.assign({}, this.props.campaignValues);
     campaignValues[item] = caller.currentTarget.value;
     this.props.updateCampaignValues(campaignValues);
@@ -48,6 +48,10 @@ class Home extends Component {
     }
     return "";
   }
+  reset() {
+    this.setState({ edited: false });
+    this.props.reset();
+  }
 
   render() {
     const { userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error } = this.props;
@@ -74,91 +78,102 @@ class Home extends Component {
               { 
                 deploymentStatus === deploymentActions.RUN_COMPLETE &&  
                 <div>
-                  <span>Deployment Complete!</span>
+                  <h4>Deployment Complete!</h4>
                   <ProgressBar bsStyle="success" now={ 100 } />
                 </div>
               }
             </div>
-            { deploymentResults.length > 0 && <DeploymentResults results={ deploymentResults } /> }
+            { 
+              deploymentResults.length > 0 && 
+              <div>
+                <DeploymentResults results={ deploymentResults } /> 
+                <div className="text-center">
+                  <Button bsStyle="success" onClick={ this.reset.bind(this) }>Deploy Another Campaign</Button>
+                </div>
+              </div>
+            }
           </Col>
         </Row>
-        <Row>
-          <Col md={ 10 }>
-            <Form horizontal className="campaign-form">
-              <FormGroup controlId='userAccount'>
-                <Col componentClass={ ControlLabel } md={ 4 }>Sender</Col>
-                <Col md={ 8 }>
-                  <FormControl
-                    disabled={ deploymentStatus === deploymentActions.RUN_IN_PROGRESS }
-                    type="text"
-                    value={ userAccount }
-                    onChange={ this.updateUser.bind(this) } />
-                </Col>
-              </FormGroup>
-              <Field 
-                fieldName="escapeCaller" 
-                fieldText="Escape Caller" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'escapeCaller')}>
-                </Field>
-              <Field 
-                fieldName="escapeDestination" 
-                fieldText="Escape Destination" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'escapeDestination')}>
-                </Field>
-              <Field 
-                fieldName="securityGuard" 
-                fieldText="Security Guard" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'securityGuard')}>
-                </Field>
-              <Field 
-                fieldName="arbitrator" 
-                fieldText="Arbitrator" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'arbitrator')}>
-                </Field>
-              <Field 
-                fieldName="donor" 
-                fieldText="Donor" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'donor')}>
-                </Field>
-              <Field 
-                fieldName="recipient" 
-                fieldText="Recipient" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'recipient')}>
-                </Field>
-              <Field 
-                fieldName="tokenName" 
-                fieldText="Token Name" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'tokenName')}>
-                </Field>
-              <Field 
-                fieldName="tokenSymbol" 
-                fieldText="Token Symbol" 
-                deploymentStatus={ deploymentStatus }
-                campaignValues={ campaignValues }
-                handleChange={ this.handleChange.bind(this, 'tokenSymbol')}>
-                </Field>
-              <Row className="pullRight">
-                <Col md={ 4 } mdOffset={ 8 }>
-                  <Button bsStyle="success" onClick={ this.runDeployment.bind(this) } disabled={ (!this.state.edited || deploymentStatus === deploymentActions.RUN_IN_PROGRESS) } >Run Deployment</Button>
-                </Col>
-              </Row>
-            </Form>
-          </Col>
-        </Row>
+        {
+          deploymentStatus != deploymentActions.RUN_COMPLETE && 
+          <Row>
+            <Col md={ 10 }>
+              <Form horizontal className="campaign-form">
+                <FormGroup controlId='userAccount'>
+                  <Col componentClass={ ControlLabel } md={ 4 }>Sender</Col>
+                  <Col md={ 8 }>
+                    <FormControl
+                      disabled={ deploymentStatus === deploymentActions.RUN_IN_PROGRESS }
+                      type="text"
+                      value={ userAccount }
+                      onChange={ this.updateUser.bind(this) } />
+                  </Col>
+                </FormGroup>
+                <Field 
+                  fieldName="escapeCaller" 
+                  fieldText="Escape Caller" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'escapeCaller')}>
+                  </Field>
+                <Field 
+                  fieldName="escapeDestination" 
+                  fieldText="Escape Destination" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'escapeDestination')}>
+                  </Field>
+                <Field 
+                  fieldName="securityGuard" 
+                  fieldText="Security Guard" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'securityGuard')}>
+                  </Field>
+                <Field 
+                  fieldName="arbitrator" 
+                  fieldText="Arbitrator" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'arbitrator')}>
+                  </Field>
+                <Field 
+                  fieldName="donor" 
+                  fieldText="Donor" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'donor')}>
+                  </Field>
+                <Field 
+                  fieldName="recipient" 
+                  fieldText="Recipient" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'recipient')}>
+                  </Field>
+                <Field 
+                  fieldName="tokenName" 
+                  fieldText="Token Name" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'tokenName')}>
+                  </Field>
+                <Field 
+                  fieldName="tokenSymbol" 
+                  fieldText="Token Symbol" 
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'tokenSymbol')}>
+                  </Field>
+                <Row className="pullRight">
+                  <Col md={ 4 } mdOffset={ 8 }>
+                    <Button bsStyle="success" onClick={ this.runDeployment.bind(this) } disabled={ (!this.state.edited || deploymentStatus === deploymentActions.RUN_IN_PROGRESS) } >Run Deployment</Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row>
+        }
       </div>
     )
   }
@@ -168,7 +183,7 @@ const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploy
   ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount }, dispatch);
+  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount, reset }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -21,8 +21,12 @@ export function updateCampaignValues(data) {
     }
 }
 
+export function reset() {
+    return { type: deploymentActions.RESET };
+}
+
 //RUN_UNSTARTED, RUN_IN_PROGRESS, RUN_COMPLETE, RUN_ERROR
-export function updateDeploymentStatus(status) {
+function updateDeploymentStatus(status) {
     return { 
         type: status,
         payload: { data: status }
@@ -58,7 +62,6 @@ function setDeploymentResults(data) {
         payload: { data }
     }
 }
-
 
 /*********************************
             THUNKS

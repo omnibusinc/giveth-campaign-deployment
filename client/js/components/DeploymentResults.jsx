@@ -3,7 +3,7 @@ import { Alert } from 'react-bootstrap';
 
 const DeploymentResults = ({results}) => (
   <Alert bsStyle="success">
-    <h3>Deployment Complete:</h3>
+    <h3>Deployment Results:</h3>
     {
       results.map((result, idx) => {
         return(

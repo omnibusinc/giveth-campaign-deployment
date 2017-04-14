@@ -20,7 +20,8 @@ module.exports = function() {
       vaultContract: false,
       campaignContract: false,
       controllerUpdate: false,
-      milestoneTrackerContract: false
+      milestoneTrackerContract: false,
+      spenderAuthorization: false
     },
     deploymentResults: {}
   };

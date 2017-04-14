@@ -39,7 +39,7 @@ class Home extends Component {
   getPercentComplete() {
     let complete = 10;
     for(var deployment in this.props.completedDeployments) {
-      if(this.props.completedDeployments[deployment] == true) complete += (90/6);
+      if(this.props.completedDeployments[deployment] == true) complete += (90/7);
     }
     return complete;
   }

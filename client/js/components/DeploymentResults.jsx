@@ -11,6 +11,7 @@ const DeploymentResults = ({results}) => (
             <span>{ result.contract }</span><br />
             <span> Contract Address: { result.address }</span><br />
             <span> Transaction Hash: { result.transactionHash }</span><br />
+            <span> ABI: <code>{ result.ABI }</code></span>
           </p>
         )
       })

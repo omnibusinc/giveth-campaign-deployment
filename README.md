@@ -18,4 +18,3 @@
 * Send 1ETH from one account to another: ```curl -d '{"jsonrpc":"2.0","method":"eth_sendTransaction","params": [{"from":"<account1>", "to":"<account2>", "value": 1e18}], "id":1}' -X POST http://localhost:8545/```
 * Check account balance: ```curl -d '{"jsonrpc":"2.0","method":"get_balance","params": ['<account>', 'latest'], "id":1}' -X POST http://localhost:8545/```
 * Get block at address: ```curl -d '{"jsonrpc":"2.0","method":"eth_accounts","params": [], "id":1}' -X POST http://localhost:8545/```
-

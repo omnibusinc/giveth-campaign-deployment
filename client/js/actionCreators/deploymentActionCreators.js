@@ -28,7 +28,7 @@ export function reset() {
 
 //RUN_UNSTARTED, RUN_IN_PROGRESS, RUN_COMPLETE, RUN_ERROR
 function updateDeploymentStatus(status) {
-    return { 
+    return {
         type: status,
         payload: { data: status }
     }
@@ -52,7 +52,7 @@ function updateCurrentDeploymentStep(data) {
 
 //show errors on the UI
 function showError(message, stacktrace) {
-    return { 
+    return {
         type: deploymentActions.RUN_ERROR,
         payload: { data: { message, stacktrace } }
     }
@@ -308,9 +308,9 @@ const campaignContract = () => {
     let now = + new Date();
     return new Promise((resolve, reject) => {
         resolve({
-            _startFundingTime: (now/1000), // Converts the js Now to the Solidity now :-D 
-            _endFundingTime: (now/1000) + 86400*365*5, // This campaign will be live for 5 years after that no new tokens will be issued 
-            _maximumFunding: web3.toWei(10000), // This campaign will collect a maximum of 10,000 ETH after that no new tokens will be issued 
+            _startFundingTime: (now/1000), // Converts the js Now to the Solidity now :-D
+            _endFundingTime: (now/1000) + 86400*365*5, // This campaign will be live for 5 years after that no new tokens will be issued
+            _maximumFunding: web3.toWei(10000), // This campaign will collect a maximum of 10,000 ETH after that no new tokens will be issued
             _tokenAddress: instances['minimetokenContractInstance'].address,
             _vaultAddress: instances['vaultContractInstance'].address,
             contract: web3.eth.contract(campaignContractAbi)
@@ -434,7 +434,7 @@ const deployMilestoneTrackerContract = (...args) => {
 const authorizeSpender = (dispatch) => {
     console.log("AUTHORIZING SPENDER");
     return new Promise((resolve, reject) => {
-        instances['vaultContractInstance'].authorizeSpender(instances['milestoneTrackerContractInstance'].address, true, (error, result) => {
+        instances['vaultContractInstance'].authorizeSpender(instances['milestoneTrackerContractInstance'].address, true, {from: fromAccount}, (error, result) => {
             if(error) {
                 console.log("Error", e);
                 dispatch(showError('Vault Spender Authorization Failed',  e.message));

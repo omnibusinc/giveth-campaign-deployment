@@ -4,8 +4,7 @@
   "description": "creating and deploying necessary contracts for Giveth Campaigns",
   "scripts": {
     "cli_deploy": "node cli_deploy.js",
-    "start": "webpack-dev-server --content-base client --devtool #source-map --history-api-fallback --hot --inline --progress --colors --port 3001",
-    "testrpc": "webpack-dev-server --content-base client --devtool #source-map --history-api-fallback --hot --inline --progress --colors --port 3001"
+    "start": "webpack-dev-server --content-base client --devtool #source-map --history-api-fallback --hot --inline --progress --colors --port 3001"
   },
   "author": "Jason Steele <jason.omnibus@gmail.com",
   "license": "MPL-2.0",

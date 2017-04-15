@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+import fileDownload from 'react-file-download';
 import DeploymentResults from '../components/DeploymentResults';
 import Field from '../components/Field';
 import deploymentActions from '../actions/deploymentActions';
@@ -54,6 +55,10 @@ class Home extends Component {
     return "";
   }
 
+  downloadFile() {
+    fileDownload(JSON.stringify(this.props.deploymentResults), 'deployment_results.txt');
+  }
+
   //reset all app values to their initial states.
   reset() {
     this.setState({ edited: false });
@@ -82,18 +87,21 @@ class Home extends Component {
                   <ProgressBar active now={ this.getPercentComplete() } />
                 </div>
               }
-              { 
-                deploymentStatus === deploymentActions.RUN_COMPLETE &&  
+              {
+                deploymentStatus === deploymentActions.RUN_COMPLETE &&
                 <div>
-                  <h4>Deployment Complete!</h4>
+                  <h3>Deployment Complete!</h3>
                   <ProgressBar bsStyle="success" now={ 100 } />
                 </div>
               }
             </div>
-            { 
-              deploymentResults.length > 0 && 
+            {
+              deploymentResults.length > 0 &&
               <div>
-                <DeploymentResults results={ deploymentResults } /> 
+                <div className="text-center">
+                  <Button onClick={ this.downloadFile.bind(this) }>Save Results to File</Button>
+                </div>
+                <DeploymentResults results={ deploymentResults } />
                 <div className="text-center">
                   <Button bsStyle="success" onClick={ this.reset.bind(this) }>Deploy Another Campaign</Button>
                 </div>
@@ -102,7 +110,7 @@ class Home extends Component {
           </Col>
         </Row>
         {
-          deploymentStatus != deploymentActions.RUN_COMPLETE && 
+          deploymentStatus != deploymentActions.RUN_COMPLETE &&
           <Row>
             <Col md={ 10 }>
               <Form horizontal className="campaign-form">
@@ -116,58 +124,58 @@ class Home extends Component {
                       onChange={ this.updateUser.bind(this) } />
                   </Col>
                 </FormGroup>
-                <Field 
-                  fieldName="escapeCaller" 
-                  fieldText="Escape Caller" 
+                <Field
+                  fieldName="escapeCaller"
+                  fieldText="Escape Caller"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'escapeCaller')}>
                   </Field>
-                <Field 
-                  fieldName="escapeDestination" 
-                  fieldText="Escape Destination" 
+                <Field
+                  fieldName="escapeDestination"
+                  fieldText="Escape Destination"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'escapeDestination')}>
                   </Field>
-                <Field 
-                  fieldName="securityGuard" 
-                  fieldText="Security Guard" 
+                <Field
+                  fieldName="securityGuard"
+                  fieldText="Security Guard"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'securityGuard')}>
                   </Field>
-                <Field 
-                  fieldName="arbitrator" 
-                  fieldText="Arbitrator" 
+                <Field
+                  fieldName="arbitrator"
+                  fieldText="Arbitrator"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'arbitrator')}>
                   </Field>
-                <Field 
-                  fieldName="donor" 
-                  fieldText="Donor" 
+                <Field
+                  fieldName="donor"
+                  fieldText="Donor"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'donor')}>
                   </Field>
-                <Field 
-                  fieldName="recipient" 
-                  fieldText="Recipient" 
+                <Field
+                  fieldName="recipient"
+                  fieldText="Recipient"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'recipient')}>
                   </Field>
-                <Field 
-                  fieldName="tokenName" 
-                  fieldText="Token Name" 
+                <Field
+                  fieldName="tokenName"
+                  fieldText="Token Name"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'tokenName')}>
                   </Field>
-                <Field 
-                  fieldName="tokenSymbol" 
-                  fieldText="Token Symbol" 
+                <Field
+                  fieldName="tokenSymbol"
+                  fieldText="Token Symbol"
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'tokenSymbol')}>
@@ -186,7 +194,7 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error }) => 
+const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error }) =>
   ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
 
 function mapDispatchToProps(dispatch) {

@@ -165,7 +165,7 @@ const deployMiniMeTokenFactoryContract = (miniMeTokenFactoryContract, dispatch) 
                         contract: 'Mini Me Token Factory',
                         address: contract.address,
                         transactionHash: contract.transactionHash,
-                        ABI: minimetokenfactoryContractAbi[0]
+                        ABI: minimetokenfactoryContractAbi
                     })
                     dispatch(deploymentComplete('miniMeTokenFactoryContract'));
                     dispatch(updateCurrentDeploymentStep('miniMeTokenContract'));
@@ -228,7 +228,7 @@ const deployMiniMeTokenContract = (...args) => {
                         contract: 'Mini Me Token Contract',
                         address: contract.address,
                         transactionHash: contract.transactionHash,
-                        ABI: miniMeTokenContractAbi[0]
+                        ABI: miniMeTokenContractAbi
                     });
                     dispatch(deploymentComplete('miniMeTokenContract'));
                     dispatch(updateCurrentDeploymentStep('vaultContract'));
@@ -287,7 +287,7 @@ const deployVaultContract = (...args) => {
                         contract: 'Vault Contract',
                         address: contract.address,
                         transactionHash: contract.transactionHash,
-                        ABI: vaultContractAbi[0]
+                        ABI: vaultContractAbi
                     });
                     dispatch(deploymentComplete('vaultContract'));
                     dispatch(updateCurrentDeploymentStep('campaignContract'));
@@ -348,7 +348,7 @@ const deployCampaignContract = (...args) => {
                         contract: 'Campaign Contract',
                         address: contract.address,
                         transactionHash: contract.transactionHash,
-                        ABI: campaignContractAbi[0]
+                        ABI: campaignContractAbi
                     });
                     dispatch(deploymentComplete('campaignContract'));
                     dispatch(updateCurrentDeploymentStep('controllerUpdate'));
@@ -420,7 +420,7 @@ const deployMilestoneTrackerContract = (...args) => {
                         contract: 'Milestone Tracker Contract',
                         address: contract.address,
                         transactionHash: contract.transactionHash,
-                        ABI: milestoneTrackerContractAbi[0]
+                        ABI: milestoneTrackerContractAbi
                     });
                     dispatch(deploymentComplete('milestoneTrackerContract'));
                     resolve('Milestone Tracker Complete!');

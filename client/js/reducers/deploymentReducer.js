@@ -8,7 +8,11 @@ export function campaignValues(state = {}, action) {
         case deploymentActions.RESET: 
             return Object.assign({}, state, {
                 tokenName: '',
-                tokenSymbol: ''
+                tokenSymbol: '',
+                campaignName: '',
+                campaignDescription: '',
+                campaignUrl: '',
+                campaignExtra: ''
             })
         default: return state;
     }

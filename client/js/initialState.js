@@ -10,9 +10,13 @@ module.exports = function() {
       donor: '0x839395e20bbb182fa440d08f850e6c7a8f6f0780',  // Griff
       recipient: '0x839395e20bbb182fa440d08f850e6c7a8f6f0780',
       tokenName: '',
-      tokenSymbol: ''
+      tokenSymbol: '',
+      campaignName: '',
+      campaignDescription: '',
+      campaignUrl: '',
+      campaignExtra: ''
     },
-    deploymentStatus: 'RUN_UNSTARTED', 
+    deploymentStatus: 'RUN_UNSTARTED',
     currentDeploymentStep: null,
     completedDeployments: {
       miniMeTokenFactoryContract: false,
@@ -21,7 +25,8 @@ module.exports = function() {
       campaignContract: false,
       controllerUpdate: false,
       milestoneTrackerContract: false,
-      spenderAuthorization: false
+      spenderAuthorization: false,
+      campaignAdd: false,
     },
     deploymentResults: {}
   };

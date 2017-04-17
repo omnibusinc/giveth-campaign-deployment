@@ -40,7 +40,7 @@ class Home extends Component {
   getPercentComplete() {
     let complete = 10;
     for(var deployment in this.props.completedDeployments) {
-      if(this.props.completedDeployments[deployment] == true) complete += (90/7);
+      if(this.props.completedDeployments[deployment] == true) complete += (90/8);
     }
     return complete;
   }
@@ -179,6 +179,34 @@ class Home extends Component {
                   deploymentStatus={ deploymentStatus }
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'tokenSymbol')}>
+                  </Field>
+                <Field
+                  fieldName="campaignName"
+                  fieldText="Campaign Name"
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'campaignName')}>
+                  </Field>
+                <Field
+                  fieldName="campaignDescription"
+                  fieldText="Campaign Description"
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'campaignDescription')}>
+                  </Field>
+                <Field
+                  fieldName="campaignUrl"
+                  fieldText="Campaign Url"
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'campaignUrl')}>
+                  </Field>
+                <Field
+                  fieldName="campaignExtra"
+                  fieldText="Campaign Extra"
+                  deploymentStatus={ deploymentStatus }
+                  campaignValues={ campaignValues }
+                  handleChange={ this.handleChange.bind(this, 'campaignExtra')}>
                   </Field>
                 <Row className="pullRight">
                   <Col md={ 2 } mdOffset={ 10 }>

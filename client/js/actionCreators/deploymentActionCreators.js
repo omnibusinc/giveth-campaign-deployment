@@ -9,7 +9,9 @@ if (typeof window.web3 !== 'undefined') {
   web3 = new w3(new w3.providers.HttpProvider(provider_endpoint));
 }
 
-let fromAccount, _escapeCaller, _escapeDestination, _securityGuard, _arbitrator, _donor, _recipient, _tokenName, _tokenSymbol, _gasPrice;
+const _campaignTrackerAddress = '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb'; //ROPSTEN
+//web3.eth.getCode('0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb')
+let fromAccount, _escapeCaller, _escapeDestination, _securityGuard, _arbitrator, _donor, _recipient, _tokenName, _tokenSymbol, _campaignTracker, _campaignName, _campaignDescription, _campaignUrl, _campaignExtra, _gasPrice;
 let instances = {};
 let response = [];
 
@@ -81,6 +83,10 @@ export function runDeployment(userAccount, campaignValues) {
     _recipient = campaignValues.recipient;
     _tokenName = campaignValues.tokenName;
     _tokenSymbol = campaignValues.tokenSymbol;
+    _campaignName = campaignValues.campaignName;
+    _campaignDescription = campaignValues.campaignDescription;
+    _campaignUrl = campaignValues.campaignUrl;
+    _campaignExtra = campaignValues.campaignExtra
   return dispatch => {
     dispatch(updateDeploymentStatus(deploymentActions.RUN_IN_PROGRESS));
     return getGasPrice()
@@ -97,6 +103,8 @@ export function runDeployment(userAccount, campaignValues) {
         .then(milestoneTrackerContract)
         .then((result) => deployMilestoneTrackerContract(result, dispatch))
         .then(() => authorizeSpender(dispatch))
+        .then(getGivethDirectoryInstance)
+        .then((result) => addCampaignToTracker(result, dispatch))
         .then((data) => console.log(data))
         .then((data) => console.log("ALL COMPLETE"))
         .then((data) => {
@@ -445,6 +453,47 @@ const authorizeSpender = (dispatch) => {
                 dispatch(updateCurrentDeploymentStep('spenderAuthorization'));
                 resolve('SPENDER AUTHORIZED');
             }
+        });
+    });
+}
+
+const givethDirectoryAbi = [
+  {"constant":true,"inputs":[],"name":"numberOfCampaigns","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"description","type":"string"},{"name":"url","type":"string"},{"name":"token","type":"address"},{"name":"vault","type":"address"},{"name":"milestoneTracker","type":"address"},{"name":"extra","type":"string"}],"name":"addCampaign","outputs":[{"name":"idCampaign","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"idCampaign","type":"uint256"}],"name":"getCampaign","outputs":[{"name":"name","type":"string"},{"name":"description","type":"string"},{"name":"url","type":"string"},{"name":"token","type":"address"},{"name":"vault","type":"address"},{"name":"milestoneTracker","type":"address"},{"name":"extra","type":"string"},{"name":"status","type":"uint8"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"idCampaign","type":"uint256"},{"name":"name","type":"string"},{"name":"description","type":"string"},{"name":"url","type":"string"},{"name":"token","type":"address"},{"name":"vault","type":"address"},{"name":"milestoneTracker","type":"address"},{"name":"extra","type":"string"}],"name":"updateCampaign","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"idCampaign","type":"uint256"},{"name":"newStatus","type":"uint8"}],"name":"changeStatus","outputs":[],"payable":false,"type":"function"}
+];
+
+const getGivethDirectoryInstance = () => {
+  console.log("QUERYING CAMPAIGN TRACKER");
+    return new Promise((resolve, reject) => {
+      resolve({contractAbi: web3.eth.contract(givethDirectoryAbi)});
+    });
+}
+
+const addCampaignToTracker = (...args) => {
+    console.log("ADDING CAMPAIGN TO TRACKER");
+    const data = args[0];
+    let dispatch = args[1];
+    const campaignTrackerInstance = data.contractAbi.at(_campaignTrackerAddress);
+    return new Promise((resolve, reject) => {
+        campaignTrackerInstance.addCampaign(
+            _campaignName,
+            _campaignDescription,
+            _campaignUrl,
+            instances['minimetokenContractInstance'].address,
+            instances['vaultContractInstance'].address,
+            instances['milestoneTrackerContractInstance'].address,
+            _campaignExtra,
+            { from: fromAccount },
+            (error, result) => {
+                if(error) {
+                    console.log("Error", e);
+                    dispatch(showError('Adding Campaign to Tracker Failed',  e.message));
+                    reject(e);
+                } else {
+                    console.log(`${_campaignName} has been added to the Campaign Tracker`);
+                    dispatch(deploymentComplete('campaignAdd'));
+                    dispatch(updateCurrentDeploymentStep('campaignAdd'));
+                    resolve('CAMPAIGN ADDED TO TRACKER');
+                }
         });
     });
 }

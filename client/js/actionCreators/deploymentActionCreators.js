@@ -140,7 +140,7 @@ export function runDeployment(userAccount, campaignValues) {
 const getGasPrice = () => {
     console.log("RETRIEVING GAS PRICE");
     return new Promise((resolve, reject) => {
-        web3.eth.getGasPrice(function(err, result) {
+        web3.eth.getGasPrice((err, result) => {
             resolve(result);
         });
     });

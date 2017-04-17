@@ -17,15 +17,15 @@ const networks = {
     4: 'Testrpc'
 };
 const campaignTrackerContractLocations = {
-    1: '0x26104cd17cc77e510ef20adf11ecb682ca7760f0',
-    2: '0x0',
-    3: '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb',
-    4: '0x0' //enter your own for testing
+    'Main': '0x26104cd17cc77e510ef20adf11ecb682ca7760f0',
+    'Morden': '0x0',
+    'Ropsten': '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb',
+    'Testrpc': '0x0' //enter your own for testing
 };
 
 web3.version.getNetwork((e, result) => {
     currentNetwork = result < 4 ? networks[result] : networks[4];
-    _campaignTrackerAddress = campaignTrackerContractLocations[result];
+    _campaignTrackerAddress = campaignTrackerContractLocations[currentNetwork];
     console.log(`Connected to the ${currentNetwork} network.  Campaign Tracker is at ${_campaignTrackerAddress}`);
 });
 

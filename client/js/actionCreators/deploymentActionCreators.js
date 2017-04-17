@@ -1,16 +1,34 @@
 const w3 = require('Web3');
 import deploymentActions from '../actions/deploymentActions.js';
-const provider_endpoint = process.argv[2] ? process.argv[2].substr(2) : 'http://localhost:8545';
 
 let web3;
 if (typeof window.web3 !== 'undefined') {
   web3 = new w3(window.web3.currentProvider);
 } else {
-  web3 = new w3(new w3.providers.HttpProvider(provider_endpoint));
+  web3 = new w3(new w3.providers.HttpProvider('http://localhost:8545'));
 }
 
-const _campaignTrackerAddress = '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb'; //ROPSTEN
-//web3.eth.getCode('0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb')
+let currentNetwork;
+let _campaignTrackerAddress
+const networks = {
+    1: 'Main',
+    2: 'Morden',
+    3: 'Ropsten',
+    4: 'Testrpc'
+};
+const campaignTrackerContractLocations = {
+    1: '0x26104cd17cc77e510ef20adf11ecb682ca7760f0',
+    2: '0x0',
+    3: '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb',
+    4: '0x0' //enter your own for testing
+};
+
+web3.version.getNetwork((e, result) => {
+    currentNetwork = result < 4 ? networks[result] : networks[4];
+    _campaignTrackerAddress = campaignTrackerContractLocations[result];
+    console.log(`Connected to the ${currentNetwork} network.  Campaign Tracker is at ${_campaignTrackerAddress}`);
+});
+
 let fromAccount, _escapeCaller, _escapeDestination, _securityGuard, _arbitrator, _donor, _recipient, _tokenName, _tokenSymbol, _campaignTracker, _campaignName, _campaignDescription, _campaignUrl, _campaignExtra, _gasPrice;
 let instances = {};
 let response = [];

@@ -13,9 +13,9 @@
 - In a terminal, run: ```testrpc --deterministic```.  Leave this running
 - Point MetaMask to ```Localhost 8545```
 - In a second terminal, run: ```npm start```
-- Navigate to ```localhost:3001``` in your browser with MetaMask installed.
+- Navigate to ```localhost:8080``` or ```localhost:3001``` in your browser with MetaMask installed.
 
 ## Running the web client on public networks
 - Point MetaMask to the network you want to deploy to (Ropsten, Morden, Main)
 - In the terminal, run: ```npm start```
-- Navigate to ```localhost:3001``` in your browser with MetaMask installed. 
+- Navigate to ```localhost:8080``` or ```localhost:3001``` in your browser with MetaMask installed. 

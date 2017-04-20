@@ -1,4 +1,4 @@
 {
 "eslint.enable": false,
-"vsicons.presets.angular": true
+"vsicons.presets.angular": false
 }

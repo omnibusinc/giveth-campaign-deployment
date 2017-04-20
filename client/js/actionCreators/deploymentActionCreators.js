@@ -46,6 +46,10 @@ export function reset() {
     return { type: deploymentActions.RESET };
 }
 
+export function cancel() {
+    return { type: deploymentActions.CANCEL };
+}
+
 //RUN_UNSTARTED, RUN_IN_PROGRESS, RUN_COMPLETE, RUN_ERROR
 function updateDeploymentStatus(status) {
     return {

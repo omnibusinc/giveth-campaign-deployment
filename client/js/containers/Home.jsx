@@ -6,15 +6,16 @@ import DeploymentResults from '../components/DeploymentResults';
 import Field from '../components/Field';
 import deploymentActions from '../actions/deploymentActions';
 import { setAccount } from '../actionCreators/userActionCreators';
-import { runDeployment, updateCampaignValues, reset } from '../actionCreators/deploymentActionCreators';
-import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label } from 'react-bootstrap';
+import { runDeployment, updateCampaignValues, reset, cancel } from '../actionCreators/deploymentActionCreators';
+import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label, Panel } from 'react-bootstrap';
 
 class Home extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       edited: false,
-      domain: null
+      domain: null,
+      cancelOpen: false
     }
   }
 
@@ -62,6 +63,11 @@ class Home extends Component {
   //begin the deployment chain.
   runDeployment() {
     this.props.runDeployment(this.props.userAccount, this.props.campaignValues);
+  }
+
+  cancel() {
+    this.setState({ cancelOpen: false });
+    this.props.cancel();
   }
 
   //get deployment chain progress for progress bar.
@@ -113,6 +119,22 @@ class Home extends Component {
                 <div>
                   <h4>Deploying: { this.formatCurrentDeploymentStep(currentDeploymentStep) } <img src="../../img/spinner.gif" className="spinner" /></h4>
                   <ProgressBar active now={ this.getPercentComplete() } />
+                  <div>
+                    <Button bsStyle="danger" onClick={ () => this.setState({ cancelOpen: true }) } disabled={ this.state.cancelOpen }>Cancel Deployment</Button>
+                    {
+                      this.state.cancelOpen &&
+                      <Alert bsStyle="danger" className="cancel-confirmation">
+                        <h3>Warning</h3>
+                        <p>
+                          Cancelling a running deployment will result in a loss of all progress.  Do you wish to continue?
+                          <div className="pullRight button-bar">
+                            <Button onClick={ () => this.setState({ cancelOpen: false }) }>Continue Deployment</Button>
+                            <Button bsStyle="danger" onClick={ this.cancel.bind(this) }>Cancel Deployment</Button>
+                          </div>
+                        </p>
+                      </Alert>
+                    }
+                  </div>
                 </div>
               }
               {
@@ -261,10 +283,10 @@ class Home extends Component {
 }
 
 const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error }) =>
-  ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
+                        ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount, reset }, dispatch);
+  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount, reset, cancel }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

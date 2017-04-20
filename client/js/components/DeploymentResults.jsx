@@ -22,7 +22,11 @@ class DeploymentResults extends Component {
                   <a href={ `${ domain }${ result.transactionHash }` } target="_blank">{ result.transactionHash }</a>
                 </span><br />
                 <span>
-                  <Button onClick={ ()=> this.setState({ [result.contract]: !this.state[result.contract] })}>View Abi</Button>
+                  {
+                    !this.state[result.contract]
+                      ? <Button onClick={ ()=> this.setState({ [result.contract]: !this.state[result.contract] })}>View Abi</Button>
+                      : <Button onClick={ ()=> this.setState({ [result.contract]: !this.state[result.contract] })}>Hide Abi</Button>
+                  }
                   <Panel collapsible expanded={ this.state[result.contract] }>
                     <p><code>
                       { JSON.stringify(result.ABI) }

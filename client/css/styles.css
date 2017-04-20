@@ -45,6 +45,18 @@
   margin: 20px 0px;
 }
 
+.cancel-confirmation { 
+  margin-top: 20px;
+}
+
+.button-bar {
+  padding-top: 20px;
+}
+
+.button-bar .btn {
+  margin: 0px 10px;
+}
+
 .deployment-results {
   margin-top: 20px;
 }

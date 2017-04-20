@@ -29,6 +29,8 @@ export function deploymentStatus(state = deploymentActions.RUN_UNSTARTED, action
             return action.payload.data;
         case deploymentActions.RESET: 
             return deploymentActions.RUN_UNSTARTED;
+        case deploymentActions.CANCEL: 
+            return deploymentActions.RUN_UNSTARTED;
         default: return state;
     }
 }
@@ -39,6 +41,8 @@ export function currentDeploymentStep(state = null, action) {
         case deploymentActions.UPDATE_DEPLOYMENT_STEP:
             return action.payload.data;
         case deploymentActions.RESET: 
+            return null;
+        case deploymentActions.CANCEL: 
             return null;
         default: return state;
     }
@@ -51,6 +55,8 @@ export function deploymentResults(state = [], action) {
             return action.payload.data;
         case deploymentActions.RESET: 
             return [];
+        case deploymentActions.CANCEL: 
+            return [];
         default: return state;
     }
 }
@@ -62,6 +68,8 @@ export function completedDeployments(state = {}, action) {
             return Object.assign({}, state, { [action.payload.data]: true });
         case deploymentActions.RESET:
             return Object.assign({}, state, resetCompletedDeployments(state));
+        case deploymentActions.CANCEL:
+            return Object.assign({}, state, resetCompletedDeployments(state));
         default: return state;
     }
 }
@@ -72,6 +80,8 @@ export function error(state = false, action) {
         case deploymentActions.RUN_ERROR:
             return action.payload.data;
         case deploymentActions.RESET:
+            return false;
+        case deploymentActions.CANCEL:
             return false;
         default: return false;
     }

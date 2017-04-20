@@ -20,7 +20,7 @@ const campaignTrackerContractLocations = {
     'Main': '0x26104cd17cc77e510ef20adf11ecb682ca7760f0',
     'Morden': '0x0',
     'Ropsten': '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb',
-    'Testrpc': '0x0' //enter your own for testing
+    'Testrpc': '0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab' //enter your own for testing
 };
 
 web3.version.getNetwork((e, result) => {
@@ -44,6 +44,10 @@ export function updateCampaignValues(data) {
 //reset all values to their initial state.
 export function reset() {
     return { type: deploymentActions.RESET };
+}
+
+export function cancel() {
+    return { type: deploymentActions.CANCEL };
 }
 
 //RUN_UNSTARTED, RUN_IN_PROGRESS, RUN_COMPLETE, RUN_ERROR

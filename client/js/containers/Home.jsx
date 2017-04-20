@@ -6,15 +6,44 @@ import DeploymentResults from '../components/DeploymentResults';
 import Field from '../components/Field';
 import deploymentActions from '../actions/deploymentActions';
 import { setAccount } from '../actionCreators/userActionCreators';
-import { runDeployment, updateCampaignValues, reset } from '../actionCreators/deploymentActionCreators';
-import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label } from 'react-bootstrap';
+import { runDeployment, updateCampaignValues, reset, cancel } from '../actionCreators/deploymentActionCreators';
+import { Form, FormGroup, ControlLabel, FormControl, Col, Row, Button, ProgressBar, Glyphicon, Alert, Label, Panel } from 'react-bootstrap';
 
 class Home extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      edited: false
+      edited: false,
+      domain: null,
+      cancelOpen: false
     }
+  }
+
+  //think about the placement of this
+  componentDidMount() {
+    let currentNetwork;
+    let _campaignTrackerAddress
+    let domain;
+    const networks = {
+        1: 'Main',
+        2: 'Morden',
+        3: 'Ropsten',
+        4: 'Testrpc'
+    };
+    const campaignTrackerContractLocations = {
+        'Main': '0x26104cd17cc77e510ef20adf11ecb682ca7760f0',
+        'Morden': '0x0',
+        'Ropsten': '0x53fc022DD190F0b37A5501FeE92171Ed1C7CD4Eb',
+        'Testrpc': '0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab' //enter your own for testing
+    };
+
+    web3.version.getNetwork((e, result) => {
+        currentNetwork = result < 4 ? networks[result] : networks[4];
+        _campaignTrackerAddress = campaignTrackerContractLocations[currentNetwork];
+        console.log(`Connected to the ${currentNetwork} network.  Campaign Tracker is at ${_campaignTrackerAddress}`);
+        domain = currentNetwork == 'Main' ? 'https://etherscan.io/tx/' : currentNetwork == 'Ropsten' ? 'https://ropsten.etherscan.io/tx/' : '';
+        this.setState({ domain });
+    });
   }
 
   //update values to the campaign fields.
@@ -34,6 +63,11 @@ class Home extends Component {
   //begin the deployment chain.
   runDeployment() {
     this.props.runDeployment(this.props.userAccount, this.props.campaignValues);
+  }
+
+  cancel() {
+    this.setState({ cancelOpen: false });
+    this.props.cancel();
   }
 
   //get deployment chain progress for progress bar.
@@ -85,6 +119,22 @@ class Home extends Component {
                 <div>
                   <h4>Deploying: { this.formatCurrentDeploymentStep(currentDeploymentStep) } <img src="../../img/spinner.gif" className="spinner" /></h4>
                   <ProgressBar active now={ this.getPercentComplete() } />
+                  <div>
+                    <Button bsStyle="danger" onClick={ () => this.setState({ cancelOpen: true }) } disabled={ this.state.cancelOpen }>Cancel Deployment</Button>
+                    {
+                      this.state.cancelOpen &&
+                      <Alert bsStyle="danger" className="cancel-confirmation">
+                        <h3>Warning</h3>
+                        <p>
+                          Cancelling a running deployment will result in a loss of all progress.  Do you wish to continue?
+                          <div className="pullRight button-bar">
+                            <Button onClick={ () => this.setState({ cancelOpen: false }) }>Continue Deployment</Button>
+                            <Button bsStyle="danger" onClick={ this.cancel.bind(this) }>Cancel Deployment</Button>
+                          </div>
+                        </p>
+                      </Alert>
+                    }
+                  </div>
                 </div>
               }
               {
@@ -101,7 +151,7 @@ class Home extends Component {
                 <div className="text-center">
                   <Button onClick={ this.downloadFile.bind(this) }>Save Results to File</Button>
                 </div>
-                <DeploymentResults results={ deploymentResults } />
+                <DeploymentResults domain={ this.state.domain } />
                 <div className="text-center">
                   <Button bsStyle="success" onClick={ this.reset.bind(this) }>Deploy Another Campaign</Button>
                 </div>
@@ -208,6 +258,16 @@ class Home extends Component {
                   campaignValues={ campaignValues }
                   handleChange={ this.handleChange.bind(this, 'campaignExtra')}>
                   </Field>
+                <Row>
+                  <Col md={ 10 } mdOffset={ 2 }>
+                    <Alert bsStyle="info">
+                      The Campaign Deployer deploys a number of contracts to the Ethereum blockchain.
+                      You will be prompted to Accept each transaction.
+                      Each transaction may take up to a minute to be mined.  Please be patient.
+                      Navigating away from this page will cancel the deployment process, and all progress will be lost.
+                    </Alert>
+                  </Col>
+                </Row>
                 <Row className="pullRight">
                   <Col md={ 2 } mdOffset={ 10 }>
                     <Button bsStyle="success" onClick={ this.runDeployment.bind(this) } disabled={ (!this.state.edited || deploymentStatus === deploymentActions.RUN_IN_PROGRESS) } >Run Deployment</Button>
@@ -223,10 +283,10 @@ class Home extends Component {
 }
 
 const mapStateToProps = ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error }) =>
-  ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
+                        ({ userAccount, campaignValues, deploymentStatus, deploymentResults, completedDeployments, currentDeploymentStep, error });
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount, reset }, dispatch);
+  return bindActionCreators({ runDeployment, updateCampaignValues, setAccount, reset, cancel }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
